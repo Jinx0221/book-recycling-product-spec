@@ -1,0 +1,1554 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>图书回收多模式交易商城 · 产品功能规格文档</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1a2e;
+    --ink-light: #2d2d4a;
+    --paper: #f5f0e8;
+    --paper-warm: #ede8dc;
+    --accent: #c84b31;
+    --accent-gold: #d4a017;
+    --accent-green: #2d6a4f;
+    --accent-blue: #1b4f72;
+    --border: rgba(26,26,46,0.12);
+    --tag-c1: #c84b31;
+    --tag-c2: #7b3f8c;
+    --tag-b1: #1b4f72;
+    --tag-b2: #2d6a4f;
+    --tag-b3: #6b4c11;
+    --tag-b4: #3d3d3d;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Noto Sans SC', sans-serif;
+    font-weight: 400;
+    line-height: 1.7;
+    font-size: 14px;
+  }
+
+  /* HEADER */
+  .masthead {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 60px 80px 50px;
+    position: relative;
+    overflow: hidden;
+  }
+  .masthead::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 320px; height: 320px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(200,75,49,0.25) 0%, transparent 70%);
+  }
+  .masthead::after {
+    content: '📚';
+    position: absolute;
+    right: 80px; top: 50%;
+    transform: translateY(-50%);
+    font-size: 120px;
+    opacity: 0.08;
+    filter: grayscale(1);
+  }
+  .masthead-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+    font-weight: 500;
+  }
+  .masthead h1 {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 12px;
+    max-width: 600px;
+  }
+  .masthead-sub {
+    font-size: 13px;
+    color: rgba(245,240,232,0.6);
+    font-weight: 300;
+    letter-spacing: 0.5px;
+  }
+  .masthead-meta {
+    margin-top: 32px;
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+  .meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .meta-label { font-size: 10px; letter-spacing: 2px; color: rgba(245,240,232,0.4); text-transform: uppercase; }
+  .meta-value { font-size: 13px; font-weight: 500; color: var(--paper); }
+
+  /* NAV */
+  .nav-bar {
+    background: var(--ink-light);
+    padding: 0 80px;
+    display: flex;
+    gap: 0;
+    border-bottom: 2px solid var(--accent);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    overflow-x: auto;
+  }
+  .nav-item {
+    padding: 14px 20px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    color: rgba(245,240,232,0.5);
+    cursor: pointer;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .nav-item:hover { color: var(--paper); }
+  .nav-item.active { color: var(--paper); border-bottom-color: var(--accent); }
+  .nav-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* LAYOUT */
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 80px; }
+
+  /* SECTION */
+  .section {
+    padding: 60px 0 40px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section:last-child { border-bottom: none; }
+
+  .section-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 24px;
+    margin-bottom: 40px;
+  }
+  .section-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 48px;
+    font-weight: 400;
+    color: rgba(26,26,46,0.08);
+    line-height: 1;
+    flex-shrink: 0;
+    margin-top: -6px;
+  }
+  .section-info {}
+  .section-tag {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 2px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: white;
+    margin-bottom: 8px;
+  }
+  .section-title {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    line-height: 1.3;
+  }
+  .section-desc {
+    font-size: 13px;
+    color: rgba(26,26,46,0.55);
+    line-height: 1.6;
+    max-width: 700px;
+  }
+
+  /* PAGE GRID */
+  .pages-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+  }
+
+  /* PAGE CARD */
+  .page-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+  .page-card:hover {
+    box-shadow: 0 8px 32px rgba(26,26,46,0.1);
+    transform: translateY(-2px);
+  }
+  .card-header {
+    padding: 18px 20px 14px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .card-icon {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .card-meta {}
+  .card-page-id {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: rgba(26,26,46,0.35);
+    letter-spacing: 1px;
+    margin-bottom: 2px;
+  }
+  .card-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.3;
+  }
+  .card-body {
+    padding: 16px 20px;
+  }
+  .card-purpose {
+    font-size: 12px;
+    color: rgba(26,26,46,0.6);
+    line-height: 1.6;
+    margin-bottom: 14px;
+    padding-bottom: 14px;
+    border-bottom: 1px dashed var(--border);
+  }
+  .features-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+  .feature-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--ink);
+    line-height: 1.5;
+  }
+  .feature-bullet {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+    margin-top: 5px;
+  }
+
+  /* FLOW SECTION */
+  .flow-section {
+    background: var(--paper-warm);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 24px;
+    margin-bottom: 28px;
+  }
+  .flow-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(26,26,46,0.4);
+    margin-bottom: 14px;
+  }
+  .flow-steps {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0;
+  }
+  .flow-step {
+    display: flex;
+    align-items: center;
+    gap: 0;
+  }
+  .step-box {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 7px 12px;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+  .step-arrow {
+    color: rgba(26,26,46,0.25);
+    padding: 0 6px;
+    font-size: 12px;
+  }
+
+  /* STATE BADGES */
+  .badge-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 12px;
+  }
+  .badge {
+    padding: 3px 10px;
+    border-radius: 2px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+  .badge-red { background: #fde8e3; color: #c84b31; }
+  .badge-yellow { background: #fef3cd; color: #856404; }
+  .badge-green { background: #d1f0e3; color: #2d6a4f; }
+  .badge-blue { background: #dbeafe; color: #1b4f72; }
+  .badge-gray { background: #f1f1f1; color: #555; }
+  .badge-purple { background: #ede9fe; color: #5b21b6; }
+
+  /* INTERACTION NOTE */
+  .interaction-note {
+    background: #fff8f0;
+    border-left: 3px solid var(--accent-gold);
+    padding: 12px 16px;
+    border-radius: 0 4px 4px 0;
+    margin-top: 12px;
+    font-size: 11.5px;
+    color: rgba(26,26,46,0.7);
+    line-height: 1.6;
+  }
+  .interaction-note strong { color: var(--ink); font-weight: 600; }
+
+  /* OVERVIEW TABLE */
+  .overview-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 40px;
+    font-size: 12.5px;
+  }
+  .overview-table th {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 10px 14px;
+    text-align: left;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+  .overview-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  .overview-table tr:nth-child(even) td { background: rgba(26,26,46,0.02); }
+
+  /* LEGEND */
+  .legend {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 32px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12px;
+    color: rgba(26,26,46,0.65);
+  }
+  .legend-dot {
+    width: 10px; height: 10px;
+    border-radius: 2px;
+  }
+
+  /* DIVIDER */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 40px 0;
+  }
+  .divider-line { flex: 1; height: 1px; background: var(--border); }
+  .divider-text {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: rgba(26,26,46,0.3);
+    white-space: nowrap;
+  }
+
+  /* FOOTER */
+  footer {
+    background: var(--ink);
+    color: rgba(245,240,232,0.4);
+    padding: 32px 80px;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  footer strong { color: var(--paper); }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .masthead, .container, footer, .nav-bar { padding-left: 24px; padding-right: 24px; }
+    .masthead h1 { font-size: 26px; }
+    .pages-grid { grid-template-columns: 1fr; }
+    .flow-steps { gap: 4px; }
+  }
+
+  /* ANCHOR SMOOTH */
+  html { scroll-behavior: smooth; }
+  :target { scroll-margin-top: 60px; }
+
+  .subsection-title {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ink);
+    margin: 28px 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .subsection-title::before {
+    content: '';
+    display: block;
+    width: 3px; height: 16px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+</style>
+</head>
+<body>
+
+<!-- MASTHEAD -->
+<div class="masthead">
+  <div class="masthead-label">Product Specification · PRD v1.0</div>
+  <h1>图书回收与多模式<br>交易商城系统</h1>
+  <div class="masthead-sub">Book Recycling & Multi-modal Trading Platform · Full System Feature Specification</div>
+  <div class="masthead-meta">
+    <div class="meta-item">
+      <span class="meta-label">端口数量</span>
+      <span class="meta-value">6 个系统端</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">总页面数</span>
+      <span class="meta-value">40+ 功能页面</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">终端形态</span>
+      <span class="meta-value">微信小程序</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">核心模式</span>
+      <span class="meta-value">上门 / 站点 / 大宗</span>
+    </div>
+  </div>
+</div>
+
+<!-- NAV -->
+<div class="nav-bar">
+  <a href="#overview" class="nav-item active"><span class="nav-dot" style="background:#888"></span>系统总览</a>
+  <a href="#c1" class="nav-item"><span class="nav-dot" style="background:var(--tag-c1)"></span>C端·散客/学生</a>
+  <a href="#c2" class="nav-item"><span class="nav-dot" style="background:var(--tag-c2)"></span>C端·废品站大宗</a>
+  <a href="#b1" class="nav-item"><span class="nav-dot" style="background:var(--tag-b1)"></span>B端·回收员</a>
+  <a href="#b2" class="nav-item"><span class="nav-dot" style="background:var(--tag-b2)"></span>B端·站点管理员</a>
+  <a href="#b3" class="nav-item"><span class="nav-dot" style="background:var(--tag-b3)"></span>B端·仓库管理员</a>
+</div>
+
+<!-- CONTENT -->
+<div class="container">
+
+  <!-- OVERVIEW -->
+  <div class="section" id="overview">
+    <div class="section-header">
+      <div class="section-num">00</div>
+      <div class="section-info">
+        <div class="section-tag" style="background:#3d3d3d">SYSTEM OVERVIEW</div>
+        <div class="section-title">系统架构总览</div>
+        <div class="section-desc">本系统共包含6个端口，覆盖图书回收的全链路：从用户提交回收申请，到回收员上门取书，站点管理调度，仓库入库核验、上架入库，形成闭环交易体系。</div>
+      </div>
+    </div>
+
+    <table class="overview-table">
+      <thead>
+        <tr>
+          <th>端口</th>
+          <th>使用对象</th>
+          <th>终端</th>
+          <th>核心功能</th>
+          <th>页面数</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="badge badge-red">C端·散客/学生</span></td>
+          <td>普通大学生、个人用户</td>
+          <td>微信小程序</td>
+          <td>扫码录入、提交回收申请、查看订单、出示核验码</td>
+          <td>8页</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-purple">C端·废品站大宗</span></td>
+          <td>废品站、大批量回收商</td>
+          <td>微信小程序</td>
+          <td>扫码查价区间、按重量录入、提交大宗订单</td>
+          <td>6页</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-blue">B端·回收员</span></td>
+          <td>校内兼职大学生回收员</td>
+          <td>微信小程序</td>
+          <td>注册、上线接单、上门取书、核验、交接站点</td>
+          <td>7页</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-green">B端·站点管理员</span></td>
+          <td>直营站点驻守工作人员</td>
+          <td>微信小程序</td>
+          <td>回收员管理、扫码接收、站点直收、生成转运单</td>
+          <td>8页</td>
+        </tr>
+        <tr>
+          <td><span class="badge" style="background:#fde8e3;color:#6b4c11">B端·仓库管理员</span></td>
+          <td>仓储中心工作人员</td>
+          <td>微信小程序</td>
+          <td>扫码入库、清点标记、拆包核验、书籍上架</td>
+          <td>7页</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="flow-section">
+      <div class="flow-title">全链路业务流转</div>
+      <div class="flow-steps">
+        <div class="flow-step"><div class="step-box">C端提交申请</div><div class="step-arrow">→</div></div>
+        <div class="flow-step"><div class="step-box">系统派单</div><div class="step-arrow">→</div></div>
+        <div class="flow-step"><div class="step-box">回收员上门/站点直收</div><div class="step-arrow">→</div></div>
+        <div class="flow-step"><div class="step-box">核验书籍</div><div class="step-arrow">→</div></div>
+        <div class="flow-step"><div class="step-box">打包交站点</div><div class="step-arrow">→</div></div>
+        <div class="flow-step"><div class="step-box">站点转运</div><div class="step-arrow">→</div></div>
+        <div class="flow-step"><div class="step-box">仓库入库核验</div><div class="step-arrow">→</div></div>
+        <div class="flow-step"><div class="step-box">书籍上架</div></div>
+      </div>
+    </div>
+
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--tag-c1)"></div>C端·散客/学生</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--tag-c2)"></div>C端·废品站大宗</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--tag-b1)"></div>B端·回收员</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--tag-b2)"></div>B端·站点管理员</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--tag-b3)"></div>B端·仓库管理员</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════ C1 ══════════════════════════════════════ -->
+  <div class="section" id="c1">
+    <div class="section-header">
+      <div class="section-num">01</div>
+      <div class="section-info">
+        <div class="section-tag" style="background:var(--tag-c1)">C-END · USER</div>
+        <div class="section-title">C端 · 散客 / 大学生</div>
+        <div class="section-desc">面向普通大学生和个人用户的回收入口，支持单本扫描录入、在线提交订单、选择回收方式（上门/送站点），以及订单管理全流程。</div>
+      </div>
+    </div>
+
+    <div class="flow-section">
+      <div class="flow-title">C端散客核心交互流程</div>
+      <div class="flow-steps">
+        <div class="flow-step"><div class="step-box">扫码录入书籍</div><div class="step-arrow">→</div></div>
+        <div class="flow-step"><div class="step-box">待回收列表</div><div class="step-arrow">→</div></div>
+        <div class="flow-step"><div class="step-box">选择回收方式</div><div class="step-arrow">→</div></div>
+        <div class="flow-step"><div class="step-box">填写信息/拍照</div><div class="step-arrow">→</div></div>
+        <div class="flow-step"><div class="step-box">提交订单</div><div class="step-arrow">→</div></div>
+        <div class="flow-step"><div class="step-box">订单跟踪</div><div class="step-arrow">→</div></div>
+        <div class="flow-step"><div class="step-box">交易完成</div></div>
+      </div>
+    </div>
+
+    <div class="pages-grid">
+
+      <!-- P1-01 -->
+      <div class="page-card">
+        <div class="card-header">
+          <div class="card-icon" style="background:#fde8e3">📷</div>
+          <div class="card-meta">
+            <div class="card-page-id">C1-P01</div>
+            <div class="card-title">书籍扫码识别页</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-purpose">用户通过摄像头扫描书籍条形码/ISBN，系统自动识别并拉取书籍信息与预估价，用户确认后添加至回收列表。</div>
+          <ul class="features-list">
+            <li class="feature-item"><div class="feature-bullet"></div>调用相机，扫描书籍条形码或手动输入ISBN</li>
+            <li class="feature-item"><div class="feature-bullet"></div>展示书籍封面、书名、作者、出版社、ISBN</li>
+            <li class="feature-item"><div class="feature-bullet"></div>展示单本预估回收价（元）</li>
+            <li class="feature-item"><div class="feature-bullet"></div>录入回收数量（默认1，可增减）</li>
+            <li class="feature-item"><div class="feature-bullet"></div>点击「加入回收列表」按钮</li>
+            <li class="feature-item"><div class="feature-bullet"></div>支持无间断连续扫码，扫下一本</li>
+            <li class="feature-item"><div class="feature-bullet"></div>底部悬浮展示当前已录入书籍数量入口</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- P1-02 -->
+      <div class="page-card">
+        <div class="card-header">
+          <div class="card-icon" style="background:#fde8e3">📋</div>
+          <div class="card-meta">
+            <div class="card-page-id">C1-P02</div>
+            <div class="card-title">待回收书籍列表页</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-purpose">汇总已扫码录入的全部书籍，用户可对列表进行修改，完成后进入下一步订单确认流程。</div>
+          <ul class="features-list">
+            <li class="feature-item"><div class="feature-bullet"></div>列表展示：书籍封面缩略图、书名、预估单价、数量</li>
+            <li class="feature-item"><div class="feature-bullet"></div>每条书籍支持修改数量（+/-）</li>
+            <li class="feature-item"><div class="feature-bullet"></div>每条书籍支持删除（左滑或删除按钮）</li>
+            <li class="feature-item"><div class="feature-bullet"></div>底部展示书籍总数、预估总价</li>
+            <li class="feature-item"><div class="feature-bullet"></div>底部按钮「继续扫码」返回扫码页</li>
+            <li class="feature-item"><div class="feature-bullet"></div>底部按钮「下一步」进入订单确认（预估价满足门槛才可点击，否则灰色+提示）</li>
+          </ul>
+          <div class="interaction-note">⚠️ <strong>门槛控制：</strong>预估回收总价低于系统预设金额时，「提交」按钮置灰并显示「预估价格不足 ¥XX，暂不支持回收」提示。</div>
+        </div>
+      </div>
+
+      <!-- P1-03 -->
+      <div class="page-card">
+        <div class="card-header">
+          <div class="card-icon" style="background:#fde8e3">🔄</div>
+          <div class="card-meta">
+            <div class="card-page-id">C1-P03</div>
+            <div class="card-title">回收方式选择页</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-purpose">用户选择本次回收的服务方式，不同方式跳转至对应的信息填写页。</div>
+          <ul class="features-list">
+            <li class="feature-item"><div class="feature-bullet"></div>三个选项卡：上门回收 / 送至站点 / 快递邮寄</li>
+            <li class="feature-item"><div class="feature-bullet"></div>「快递邮寄」显示为禁用状态，附说明文字「即将开放」</li>
+            <li class="feature-item"><div class="feature-bullet"></div>「上门回收」展示服务说明：免费上门、核验后结算</li>
+            <li class="feature-item"><div class="feature-bullet"></div>「送至站点」展示说明：自行送达校内站点</li>
+            <li class="feature-item"><div class="feature-bullet"></div>选择后点击「下一步」进入对应填写页</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- P1-04 -->
+      <div class="page-card">
+        <div class="card-header">
+          <div class="card-icon" style="background:#fde8e3">🏠</div>
+          <div class="card-meta">
+            <div class="card-page-id">C1-P04</div>
+            <div class="card-title">上门回收信息填写页</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-purpose">选择「上门回收」后填写具体取书地址、预约时间，并上传书籍整体照片，完成订单提交前的最后信息录入。</div>
+          <ul class="features-list">
+            <li class="feature-item"><div class="feature-bullet"></div>选择学校（下拉/搜索，仅显示已入驻校园列表）</li>
+            <li class="feature-item"><div class="feature-bullet"></div>填写详细地址（如：知行楼5楼102室）</li>
+            <li class="feature-item"><div class="feature-bullet"></div>预约上门时间：日期选择 + 时段选择（如08:00-10:00、10:00-12:00等）</li>
+            <li class="feature-item"><div class="feature-bullet"></div>上传书籍整体照片（拍照或相册，至少1张）</li>
+            <li class="feature-item"><div class="feature-bullet"></div>展示书籍数量、预估总价汇总</li>
+            <li class="feature-item"><div class="feature-bullet"></div>点击「提交订单」生成上门回收订单</li>
+          </ul>
+          <div class="interaction-note">📸 <strong>拍照要求提示：</strong>页面内展示拍照参考示例图，提示用户将所有书籍整齐摆放后拍照。</div>
+        </div>
+      </div>
+
+      <!-- P1-05 -->
+      <div class="page-card">
+        <div class="card-header">
+          <div class="card-icon" style="background:#fde8e3">📍</div>
+          <div class="card-meta">
+            <div class="card-page-id">C1-P05</div>
+            <div class="card-title">送至站点信息确认页</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-purpose">选择「送至站点」后，用户选择目标站点，系统展示站点详情，用户确认后提交订单，获得二维码凭证。</div>
+          <ul class="features-list">
+            <li class="feature-item"><div class="feature-bullet"></div>选择学校（仅显示已入驻校园）</li>
+            <li class="feature-item"><div class="feature-bullet"></div>选择站点，展示站点名称、位置、营业时间</li>
+            <li class="feature-item"><div class="feature-bullet"></div>地图/文字方式展示站点位置</li>
+            <li class="feature-item"><div class="feature-bullet"></div>展示书籍清单及预估总价</li>
+            <li class="feature-item"><div class="feature-bullet"></div>点击「提交并生成凭证」提交订单</li>
+          </ul>
+          <div class="interaction-note">🔑 <strong>凭证说明：</strong>提交后立即跳转至核验码展示页，用户送书时需出示此码供站点管理员扫描核验。</div>
+        </div>
+      </div>
+
+      <!-- P1-06 -->
+      <div class="page-card">
+        <div class="card-header">
+          <div class="card-icon" style="background:#fde8e3">📱</div>
+          <div class="card-meta">
+            <div class="card-page-id">C1-P06</div>
+            <div class="card-title">订单核验码展示页</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-purpose">送至站点模式下，用户将书籍送到站点时出示本页二维码，供站点管理员扫码核验订单信息。</div>
+          <ul class="features-list">
+            <li class="feature-item"><div class="feature-bullet"></div>居中展示大尺寸订单二维码</li>
+            <li class="feature-item"><div class="feature-bullet"></div>二维码下方展示订单号、书籍数量</li>
+            <li class="feature-item"><div class="feature-bullet"></div>展示站点名称、站点营业时间</li>
+            <li class="feature-item"><div class="feature-bullet"></div>提示文字：「请将书籍送达站点后，让工作人员扫描此码」</li>
+            <li class="feature-item"><div class="feature-bullet"></div>按钮：「查看订单详情」跳转至订单详情页</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- P1-07 -->
+      <div class="page-card">
+        <div class="card-header">
+          <div class="card-icon" style="background:#fde8e3">📦</div>
+          <div class="card-meta">
+            <div class="card-page-id">C1-P07</div>
+            <div class="card-title">订单列表页</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-purpose">用户查看所有历史和进行中的回收订单，支持按状态筛选，对未完成订单可执行取消操作。</div>
+          <ul class="features-list">
+            <li class="feature-item"><div class="feature-bullet"></div>Tab筛选：全部 / 进行中 / 已完成 / 已取消</li>
+            <li class="feature-item"><div class="feature-bullet"></div>每条订单展示：订单号、回收方式标签、书籍数量、预估金额、当前状态</li>
+            <li class="feature-item"><div class="feature-bullet"></div>未完成订单可点击「取消订单」并二次确认</li>
+            <li class="feature-item"><div class="feature-bullet"></div>点击订单进入订单详情页</li>
+          </ul>
+          <div class="badge-row">
+            <span class="badge badge-blue">待回收员上门</span>
+            <span class="badge badge-yellow">核验中</span>
+            <span class="badge badge-green">已完成</span>
+            <span class="badge badge-gray">已取消</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- P1-08 -->
+      <div class="page-card">
+        <div class="card-header">
+          <div class="card-icon" style="background:#fde8e3">🧾</div>
+          <div class="card-meta">
+            <div class="card-page-id">C1-P08</div>
+            <div class="card-title">订单详情页</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-purpose">展示单个订单的完整信息，包括书籍明细、回收方式详情、状态流转记录，以及核验结果通知。</div>
+          <ul class="features-list">
+            <li class="feature-item"><div class="feature-bullet"></div>订单号、提交时间、回收方式</li>
+            <li class="feature-item"><div class="feature-bullet"></div>书籍列表：书名、数量、预估单价</li>
+            <li class="feature-item"><div class="feature-bullet"></div>上门回收：展示取书地址、预约时段</li>
+            <li class="feature-item"><div class="feature-bullet"></div>送至站点：展示站点名称、位置文字、营业时间</li>
+            <li class="feature-item"><div class="feature-bullet"></div>状态时间轴：已提交→已派单→回收员已到达→核验完成→交易完成</li>
+            <li class="feature-item"><div class="feature-bullet"></div>核验通过书籍照片（核验完成后显示）</li>
+            <li class="feature-item"><div class="feature-bullet"></div>最终回收金额（交易完成后显示）</li>
+            <li class="feature-item"><div class="feature-bullet"></div>未完成状态显示「取消订单」按钮</li>
+          </ul>
+        </div>
+      </div>
+
+    </div><!-- /pages-grid -->
+  </div><!-- /section c1 -->
+
+  <div class="divider"><div class="divider-line"></div><div class="divider-text">C-END · BULK RECYCLING</div><div class="divider-line"></div></div>
+
+  <!-- ═══════════════════════════════════════ C2 ══════════════════════════════════════ -->
+  <div class="section" id="c2">
+    <div class="section-header">
+      <div class="section-num">02</div>
+      <div class="section-info">
+        <div class="section-tag" style="background:var(--tag-c2)">C-END · BULK</div>
+        <div class="section-title">C端 · 废品站 / 大宗回收</div>
+        <div class="section-desc">面向废品站、大批量回收商，通过扫码获取书籍价格区间（灯色标识），按重量录入，快速提交大宗回收订单，无需逐本录入。</div>
+      </div>
+    </div>
+
+    <div class="flow-section">
+      <div class="flow-title">大宗回收核心交互流程</div>
+      <div class="flow-steps">
+        <div class="flow-step"><div class="step-box">扫码查询区间</div><div class="step-arrow">→</div></div>
+        <div class="flow-step"><div class="step-box">按区间录入重量</div><div class="step-arrow">→</div></div>
+        <div class="flow-step"><div class="step-box">加入待回收列表</div><div class="step-arrow">→</div></div>
+        <div class="flow-step"><div class="step-box">填写地址/联系方式</div><div class="step-arrow">→</div></div>
+        <div class="flow-step"><div class="step-box">提交订单</div><div class="step-arrow">→</div></div>
+        <div class="flow-step"><div class="step-box">订单管理</div></div>
+      </div>
+    </div>
+
+    <div class="interaction-note" style="margin-bottom:24px">
+      💡 <strong>价格区间灯色说明：</strong>大宗回收不展示具体金额，只展示价格区间的颜色标识：
+      <div class="badge-row" style="margin-top:8px">
+        <span class="badge badge-red">🔴 低价区 2-4元/kg</span>
+        <span class="badge badge-yellow">🟡 中价区 5-8元/kg</span>
+        <span class="badge badge-green">🟢 高价区 ≥9元/kg</span>
+      </div>
+    </div>
+
+    <div class="pages-grid">
+
+      <!-- C2-P01 -->
+      <div class="page-card">
+        <div class="card-header">
+          <div class="card-icon" style="background:#ede9fe">📷</div>
+          <div class="card-meta">
+            <div class="card-page-id">C2-P01</div>
+            <div class="card-title">书籍扫码查价页（大宗）</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-purpose">废品站用户扫描书籍条码，系统返回该书所属的价格区间灯色（不展示具体价格），用户录入该类书籍重量并加入列表。</div>
+          <ul class="features-list">
+            <li class="feature-item"><div class="feature-bullet"></div>调用相机扫描书籍条形码/ISBN</li>
+            <li class="feature-item"><div class="feature-bullet"></div>展示书籍名称（简略）</li>
+            <li class="feature-item"><div class="feature-bullet"></div>以大灯颜色方式展示价格区间（红/黄/绿）</li>
+            <li class="feature-item"><div class="feature-bullet"></div>不展示具体金额，只显示区间描述（低/中/高）</li>
+            <li class="feature-item"><div class="feature-bullet"></div>录入该区间书籍重量（千克，支持小数）</li>
+            <li class="feature-item"><div class="feature-bullet"></div>点击「加入列表」将该条目加入待回收列表</li>
+            <li class="feature-item"><div class="feature-bullet"></div>支持连续扫码录入多类书籍</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- C2-P02 -->
+      <div class="page-card">
+        <div class="card-header">
+          <div class="card-icon" style="background:#ede9fe">⚖️</div>
+          <div class="card-meta">
+            <div class="card-page-id">C2-P02</div>
+            <div class="card-title">待回收列表页（大宗）</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-purpose">汇总已录入的各价格区间书籍及对应重量，支持修改删除，底部显示各区间汇总重量。</div>
+          <ul class="features-list">
+            <li class="feature-item"><div class="feature-bullet"></div>按价格区间（红/黄/绿）分组展示</li>
+            <li class="feature-item"><div class="feature-bullet"></div>每组展示灯色标识 + 书籍条目名称 + 重量（kg）</li>
+            <li class="feature-item"><div class="feature-bullet"></div>每条支持修改重量、删除条目</li>
+            <li class="feature-item"><div class="feature-bullet"></div>底部汇总各区间总重量（如：🔴 12kg / 🟡 30kg / 🟢 5kg）</li>
+            <li class="feature-item"><div class="feature-bullet"></div>「继续扫码」返回扫码页</li>
+            <li class="feature-item"><div class="feature-bullet"></div>「下一步」进入信息填写页</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- C2-P03 -->
+      <div class="page-card">
+        <div class="card-header">
+          <div class="card-icon" style="background:#ede9fe">📝</div>
+          <div class="card-meta">
+            <div class="card-page-id">C2-P03</div>
+            <div class="card-title">上门回收信息填写页（大宗）</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-purpose">大宗用户填写取货地址和联系方式，确认各区间汇总重量后提交订单。</div>
+          <ul class="features-list">
+            <li class="feature-item"><div class="feature-bullet"></div>填写取货详细地址</li>
+            <li class="feature-item"><div class="feature-bullet"></div>填写联系人姓名、联系电话</li>
+            <li class="feature-item"><div class="feature-bullet"></div>展示各区间汇总重量（不展示金额）</li>
+            <li class="feature-item"><div class="feature-bullet"></div>预约上门时间（日期+时段选择）</li>
+            <li class="feature-item"><div class="feature-bullet"></div>点击「提交订单」生成大宗回收单</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- C2-P04 -->
+      <div class="page-card">
+        <div class="card-header">
+          <div class="card-icon" style="background:#ede9fe">📋</div>
+          <div class="card-meta">
+            <div class="card-page-id">C2-P04</div>
+            <div class="card-title">订单列表页（大宗）</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-purpose">大宗用户查看历史订单列表，支持查看详情、取消进行中订单。</div>
+          <ul class="features-list">
+            <li class="feature-item"><div class="feature-bullet"></div>Tab筛选：全部 / 进行中 / 已完成 / 已取消</li>
+            <li class="feature-item"><div class="feature-bullet"></div>每条订单：订单号、提交时间、各区间总重量、状态</li>
+            <li class="feature-item"><div class="feature-bullet"></div>进行中订单支持「取消」操作</li>
+            <li class="feature-item"><div class="feature-bullet"></div>点击订单跳转至订单详情页</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- C2-P05 -->
+      <div class="page-card">
+        <div class="card-header">
+          <div class="card-icon" style="background:#ede9fe">🧾</div>
+          <div class="card-meta">
+            <div class="card-page-id">C2-P05</div>
+            <div class="card-title">订单详情页（大宗）</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-purpose">展示大宗回收订单的完整信息，包含各区间书籍重量、取货信息、订单状态等。</div>
+          <ul class="features-list">
+            <li class="feature-item"><div class="feature-bullet"></div>订单号、提交时间</li>
+            <li class="feature-item"><div class="feature-bullet"></div>取货地址、联系人、联系电话</li>
+            <li class="feature-item"><div class="feature-bullet"></div>各区间重量汇总（红/黄/绿灯色标识）</li>
+            <li class="feature-item"><div class="feature-bullet"></div>状态时间轴展示</li>
+            <li class="feature-item"><div class="feature-bullet"></div>最终结算金额（完成后显示，含各区间单价×重量）</li>
+            <li class="feature-item"><div class="feature-bullet"></div>工作人员上传的书籍照片（完成后显示）</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- C2-P06 站点直收确认 -->
+      <div class="page-card">
+        <div class="card-header">
+          <div class="card-icon" style="background:#ede9fe">✅</div>
+          <div class="card-meta">
+            <div class="card-page-id">C2-P06</div>
+            <div class="card-title">站点直收确认单页（复用）</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-purpose">站点管理员操作生成确认单后，学生扫码拉起此页面，查看分类重量与回收总价，点击确认回收完成交易。此页面逻辑与大宗回收交互模式复用。</div>
+          <ul class="features-list">
+            <li class="feature-item"><div class="feature-bullet"></div>展示各价格区间分类（A类/B类/C类）</li>
+            <li class="feature-item"><div class="feature-bullet"></div>每类展示：回收单价（元/kg）+ 称重重量 + 小计</li>
+            <li class="feature-item"><div class="feature-bullet"></div>展示回收总价合计（如：A类9元×8kg + B类5元×3kg = 87元）</li>
+            <li class="feature-item"><div class="feature-bullet"></div>「确认回收」按钮，用户确认后交易进入待上传照片状态</li>
+            <li class="feature-item"><div class="feature-bullet"></div>站点管理员端随后上传照片，完成交易</li>
+          </ul>
+          <div class="interaction-note">🔁 <strong>交互复用说明：</strong>此页由C端用户扫描管理员生成的二维码后打开，展示方式与大宗回收的「按区间+重量+总价」格式一致。</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="divider"><div class="divider-line"></div><div class="divider-text">B-END · RECYCLER</div><div class="divider-line"></div></div>
+
+  <!-- ═══════════════════════════════════════ B1 ══════════════════════════════════════ -->
+  <div class="section" id="b1">
+    <div class="section-header">
+      <div class="section-num">03</div>
+      <div class="section-info">
+        <div class="section-tag" style="background:var(--tag-b1)">B-END · RECYCLER</div>
+        <div class="section-title">B端 · 回收员（校内兼职）</div>
+        <div class="section-desc">回收员为校内招聘的兼职大学生，通过扫站点管理员二维码注册，每日上线接单并填写可接单时段，按系统派单执行上门取书、核验书籍、交接站点等操作。</div>
+      </div>
+    </div>
+
+    <div class="flow-section">
+      <div class="flow-title">回收员工作流程</div>
+      <div class="flow-steps">
+        <div class="flow-step"><div class="step-box">注册入驻</div><div class="step-arrow">→</div></div>
+        <div class="flow-step"><div class="step-box">每日上线+填写接单参数</div><div class="step-arrow">→</div></div>
+        <div class="flow-step"><div class="step-box">系统派单接收</div><div class="step-arrow">→</div></div>
+        <div class="flow-step"><div class="step-box">上门取书</div><div class="step-arrow">→</div></div>
+        <div class="flow-step"><div class="step-box">核验/移除不合格书籍</div><div class="step-arrow">→</div></div>
+        <div class="flow-step"><div class="step-box">打包上传照片</div><div class="step-arrow">→</div></div>
+        <div class="flow-step"><div class="step-box">送至站点交接</div><div class="step-arrow">→</div></div>
+        <div class="flow-step"><div class="step-box">完成结佣</div></div>
+      </div>
+    </div>
+
+    <div class="pages-grid">
+
+      <!-- B1-P01 -->
+      <div class="page-card">
+        <div class="card-header">
+          <div class="card-icon" style="background:#dbeafe">🧑‍🎓</div>
+          <div class="card-meta">
+            <div class="card-page-id">B1-P01</div>
+            <div class="card-title">注册页（扫站点码入驻）</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-purpose">新回收员通过扫描站点管理员出示的专属小程序码后，进入此注册页填写个人信息完成注册，并自动关联至该站点。</div>
+          <ul class="features-list">
+            <li class="feature-item"><div class="feature-bullet"></div>页面顶部展示所属站点名称（来自扫码信息）</li>
+            <li class="feature-item"><div class="feature-bullet"></div>填写：姓名、联系电话、学院、班级、学号</li>
+            <li class="feature-item"><div class="feature-bullet"></div>上传学生证或身份证照片（用于身份验证）</li>
+            <li class="feature-item"><div class="feature-bullet"></div>勾选服务协议</li>
+            <li class="feature-item"><div class="feature-bullet"></div>点击「提交注册」</li>
+            <li class="feature-item"><div class="feature-bullet"></div>提交后显示「注册成功，等待管理员审核」状态页</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- B1-P02 -->
+      <div class="page-card">
+        <div class="card-header">
+          <div class="card-icon" style="background:#dbeafe">🟢</div>
+          <div class="card-meta">
+            <div class="card-page-id">B1-P02</div>
+            <div class="card-title">上线接单页</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-purpose">回收员每日打开小程序后进行「上线」操作，填写今日可接单数量和时间区间，系统据此进行派单匹配。</div>
+          <ul class="features-list">
+            <li class="feature-item"><div class="feature-bullet"></div>展示当前状态：「未上线」状态（红色）</li>
+            <li class="feature-item"><div class="feature-bullet"></div>填写今日可接单数量（如：3单）</li>
+            <li class="feature-item"><div class="feature-bullet"></div>选择可接单时间区间（多选时段，如：09:00-11:00、14:00-17:00）</li>
+            <li class="feature-item"><div class="feature-bullet"></div>点击「上线接单」切换为「已上线」状态（绿色）</li>
+            <li class="feature-item"><div class="feature-bullet"></div>上线后显示「今日接单状态」摘要：可接数/已接数</li>
+            <li class="feature-item"><div class="feature-bullet"></div>入口跳转至「修改接单参数」</li>
+          </ul>
+          <div class="interaction-note">⏰ <strong>灵活时段：</strong>时段选择支持多选，解决学生课表不规律问题。上线后可在个人中心随时修改今日接单参数。</div>
+        </div>
+      </div>
+
+      <!-- B1-P03 -->
+      <div class="page-card">
+        <div class="card-header">
+          <div class="card-icon" style="background:#dbeafe">📬</div>
+          <div class="card-meta">
+            <div class="card-page-id">B1-P03</div>
+            <div class="card-title">收书任务列表页</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-purpose">展示系统派给该回收员的所有上门取书任务，按预约上门时间排序，以颜色状态提醒紧急程度。</div>
+          <ul class="features-list">
+            <li class="feature-item"><div class="feature-bullet"></div>按预约上门时间升序排列</li>
+            <li class="feature-item"><div class="feature-bullet"></div>每条任务展示：取书地址、书籍数量、预约时段、倒计时</li>
+            <li class="feature-item"><div class="feature-bullet"></div>紧急状态色标（距预约时间 &lt;30min → 红色 / &lt;1h → 黄色 / &gt;1h → 绿色）</li>
+            <li class="feature-item"><div class="feature-bullet"></div>Tab筛选：待上门 / 核验中 / 已完成</li>
+            <li class="feature-item"><div class="feature-bullet"></div>点击任务进入任务详情页</li>
+          </ul>
+          <div class="badge-row">
+            <span class="badge badge-red">🔴 &lt;30min 紧急</span>
+            <span class="badge badge-yellow">🟡 &lt;1h 留意</span>
+            <span class="badge badge-green">🟢 &gt;1h 正常</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- B1-P04 -->
+      <div class="page-card">
+        <div class="card-header">
+          <div class="card-icon" style="background:#dbeafe">🚪</div>
+          <div class="card-meta">
+            <div class="card-page-id">B1-P04</div>
+            <div class="card-title">上门取书操作页</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-purpose">回收员到达用户地址后，点击「已到达」开始核验流程，逐一核验书籍，移除不合格书籍，上传照片完成回收。</div>
+          <ul class="features-list">
+            <li class="feature-item"><div class="feature-bullet"></div>展示用户信息：取书地址、预约时段、联系方式</li>
+            <li class="feature-item"><div class="feature-bullet"></div>展示用户上传的书籍整体照片（供核验参考）</li>
+            <li class="feature-item"><div class="feature-bullet"></div>点击「已到达」开始核验（触发状态变更）</li>
+            <li class="feature-item"><div class="feature-bullet"></div>书籍核验列表：每本展示书名、预估价、核验状态</li>
+            <li class="feature-item"><div class="feature-bullet"></div>对不合格书籍可点击「移除」（需选择原因：破损/笔记过多/非正版等）</li>
+            <li class="feature-item"><div class="feature-bullet"></div>核验完成后上传：通过核验书籍照片 + 打包照片（各至少1张）</li>
+            <li class="feature-item"><div class="feature-bullet"></div>点击「完成回收」结束本单，C端用户订单更新为「交易完成」</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- B1-P05 -->
+      <div class="page-card">
+        <div class="card-header">
+          <div class="card-icon" style="background:#dbeafe">📦</div>
+          <div class="card-meta">
+            <div class="card-page-id">B1-P05</div>
+            <div class="card-title">交接站点页（出示交接码）</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-purpose">回收员将所有打包书籍运送至站点时，出示交接码，由站点管理员扫码确认接收，完成交接流程。</div>
+          <ul class="features-list">
+            <li class="feature-item"><div class="feature-bullet"></div>展示本次待交接的订单数量、总书籍数</li>
+            <li class="feature-item"><div class="feature-bullet"></div>居中展示交接二维码（含回收员ID+订单批次信息）</li>
+            <li class="feature-item"><div class="feature-bullet"></div>说明文字：「请出示此码，由站点管理员扫描确认接收」</li>
+            <li class="feature-item"><div class="feature-bullet"></div>扫码确认后页面更新为「交接成功」状态</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- B1-P06 -->
+      <div class="page-card">
+        <div class="card-header">
+          <div class="card-icon" style="background:#dbeafe">👤</div>
+          <div class="card-meta">
+            <div class="card-page-id">B1-P06</div>
+            <div class="card-title">个人中心页</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-purpose">回收员查看个人信息、修改今日接单参数、查看历史任务统计和结佣数据。</div>
+          <ul class="features-list">
+            <li class="feature-item"><div class="feature-bullet"></div>展示：姓名、学院班级、所属站点、注册时间</li>
+            <li class="feature-item"><div class="feature-bullet"></div>今日接单状态卡片：可修改接单数、时段（仅上线状态下可改）</li>
+            <li class="feature-item"><div class="feature-bullet"></div>「下线」按钮：停止今日接单</li>
+            <li class="feature-item"><div class="feature-bullet"></div>数据统计：本月已完成单数 / 本月结佣金额</li>
+            <li class="feature-item"><div class="feature-bullet"></div>历史取送任务单列表入口</li>
+            <li class="feature-item"><div class="feature-bullet"></div>结佣明细记录入口（按单结算详情）</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- B1-P07 -->
+      <div class="page-card">
+        <div class="card-header">
+          <div class="card-icon" style="background:#dbeafe">💰</div>
+          <div class="card-meta">
+            <div class="card-page-id">B1-P07</div>
+            <div class="card-title">结佣明细页</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-purpose">回收员查看每笔已完成任务对应的佣金结算详情，了解收入来源和扣款记录。</div>
+          <ul class="features-list">
+            <li class="feature-item"><div class="feature-bullet"></div>月度总计佣金金额</li>
+            <li class="feature-item"><div class="feature-bullet"></div>按时间倒序列出每笔结算记录</li>
+            <li class="feature-item"><div class="feature-bullet"></div>每条记录：订单号、完成时间、书籍数量、佣金金额</li>
+            <li class="feature-item"><div class="feature-bullet"></div>如有扣款（如因核验问题被追责），展示扣款原因及金额</li>
+            <li class="feature-item"><div class="feature-bullet"></div>支持月份筛选</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="divider"><div class="divider-line"></div><div class="divider-text">B-END · STATION ADMIN</div><div class="divider-line"></div></div>
+
+  <!-- ═══════════════════════════════════════ B2 ══════════════════════════════════════ -->
+  <div class="section" id="b2">
+    <div class="section-header">
+      <div class="section-num">04</div>
+      <div class="section-info">
+        <div class="section-tag" style="background:var(--tag-b2)">B-END · STATION ADMIN</div>
+        <div class="section-title">B端 · 站点管理员</div>
+        <div class="section-desc">站点管理员驻守校内直营站点，负责管理回收员、接收回收员交接书籍、处理学生自送订单（扫码已有订单/现场创建新订单），并将书籍统一转运至仓库。</div>
+      </div>
+    </div>
+
+    <div class="flow-section">
+      <div class="flow-title">站点管理员多场景操作流程</div>
+      <div class="flow-steps">
+        <div class="flow-step"><div class="step-box">生成注册码（招募回收员）</div><div class="step-arrow">→</div></div>
+        <div class="flow-step"><div class="step-box">扫回收员交接码（接收打包书）</div><div class="step-arrow">→</div></div>
+        <div class="flow-step"><div class="step-box">扫学生核验码（已有订单）</div><div class="step-arrow">→</div></div>
+        <div class="flow-step"><div class="step-box">现场称重创建订单（无订单学生）</div><div class="step-arrow">→</div></div>
+        <div class="flow-step"><div class="step-box">转运出库（出示转运入库码）</div></div>
+      </div>
+    </div>
+
+    <div class="pages-grid">
+
+      <!-- B2-P01 -->
+      <div class="page-card">
+        <div class="card-header">
+          <div class="card-icon" style="background:#d1f0e3">🏠</div>
+          <div class="card-meta">
+            <div class="card-page-id">B2-P01</div>
+            <div class="card-title">站点首页 / 工作台</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-purpose">管理员进入后的主工作台，展示今日各业务数据概览，提供快捷操作入口。</div>
+          <ul class="features-list">
+            <li class="feature-item"><div class="feature-bullet"></div>站点名称、今日日期</li>
+            <li class="feature-item"><div class="feature-bullet"></div>数据卡片：今日已接收订单数 / 待转运单数 / 站点回收员在线数</li>
+            <li class="feature-item"><div class="feature-bullet"></div>快捷操作：「扫码接收」「现场创建订单」「查看待转运」「管理回收员」</li>
+            <li class="feature-item"><div class="feature-bullet"></div>消息通知：回收员交接到站提醒、系统通知</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- B2-P02 -->
+      <div class="page-card">
+        <div class="card-header">
+          <div class="card-icon" style="background:#d1f0e3">👥</div>
+          <div class="card-meta">
+            <div class="card-page-id">B2-P02</div>
+            <div class="card-title">回收员管理页</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-purpose">管理员查看本站点所有已注册的回收员，可生成招募二维码供新回收员扫码注册，也可对已有回收员进行管理操作。</div>
+          <ul class="features-list">
+            <li class="feature-item"><div class="feature-bullet"></div>展示本站点回收员列表：姓名、学院班级、注册时间、今日状态（在线/离线）</li>
+            <li class="feature-item"><div class="feature-bullet"></div>每个回收员可查看详情（注册信息、本月完成单数）</li>
+            <li class="feature-item"><div class="feature-bullet"></div>「踢出站点」操作（需二次确认）</li>
+            <li class="feature-item"><div class="feature-bullet"></div>顶部按钮：「生成招募码」——展示可供新人扫码注册的专属二维码</li>
+            <li class="feature-item"><div class="feature-bullet"></div>待审核新回收员列表（如注册需审核）</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- B2-P03 -->
+      <div class="page-card">
+        <div class="card-header">
+          <div class="card-icon" style="background:#d1f0e3">📲</div>
+          <div class="card-meta">
+            <div class="card-page-id">B2-P03</div>
+            <div class="card-title">扫码操作页（多功能入口）</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-purpose">管理员使用此页进行所有扫码操作：扫回收员交接码（接收打包书籍）或扫学生核验码（处理学生自送订单）。</div>
+          <ul class="features-list">
+            <li class="feature-item"><div class="feature-bullet"></div>扫码类型选择：「接收回收员交接」 / 「核验学生订单」</li>
+            <li class="feature-item"><div class="feature-bullet"></div>调用相机扫描对应二维码</li>
+            <li class="feature-item"><div class="feature-bullet"></div>扫码后跳转至对应确认页面</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- B2-P04 -->
+      <div class="page-card">
+        <div class="card-header">
+          <div class="card-icon" style="background:#d1f0e3">🤝</div>
+          <div class="card-meta">
+            <div class="card-page-id">B2-P04</div>
+            <div class="card-title">回收员交接确认页</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-purpose">扫描回收员出示的交接码后，管理员查看本次交接的订单汇总信息，确认接收后系统完成交接记录，书籍进入待转运列表。</div>
+          <ul class="features-list">
+            <li class="feature-item"><div class="feature-bullet"></div>展示回收员姓名、交接时间</li>
+            <li class="feature-item"><div class="feature-bullet"></div>本次交接订单列表：订单号、书籍数量、回收金额、订单照片缩略图</li>
+            <li class="feature-item"><div class="feature-bullet"></div>汇总：共N单 / 共M本书 / 合计金额</li>
+            <li class="feature-item"><div class="feature-bullet"></div>「确认接收」按钮：点击后订单状态更新，进入待转运列表</li>
+            <li class="feature-item"><div class="feature-bullet"></div>如有异常可备注说明</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- B2-P05 -->
+      <div class="page-card">
+        <div class="card-header">
+          <div class="card-icon" style="background:#d1f0e3">✅</div>
+          <div class="card-meta">
+            <div class="card-page-id">B2-P05</div>
+            <div class="card-title">学生订单核验页（已有订单）</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-purpose">学生自送书籍至站点并出示二维码后，管理员扫码调出订单，核验书籍，完成站点直收流程。</div>
+          <ul class="features-list">
+            <li class="feature-item"><div class="feature-bullet"></div>展示用户信息（头像、昵称）和订单信息</li>
+            <li class="feature-item"><div class="feature-bullet"></div>书籍明细列表：书名、数量、预估价</li>
+            <li class="feature-item"><div class="feature-bullet"></div>核验操作：对不符合标准的书籍点击「移除」（选择原因）</li>
+            <li class="feature-item"><div class="feature-bullet"></div>核验完成后上传：通过核验书籍照片 + 打包照片</li>
+            <li class="feature-item"><div class="feature-bullet"></div>点击「完成回收」：系统更新C端订单状态为「交易完成」</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- B2-P06 -->
+      <div class="page-card">
+        <div class="card-header">
+          <div class="card-icon" style="background:#d1f0e3">🆕</div>
+          <div class="card-meta">
+            <div class="card-page-id">B2-P06</div>
+            <div class="card-title">现场创建回收单页（无订单学生）</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-purpose">学生未提前在C端下单，管理员现场扫码查询书籍价格区间，按区间称重分类，创建回收确认单，学生扫码确认后完成交易。</div>
+          <ul class="features-list">
+            <li class="feature-item"><div class="feature-bullet"></div>扫码书籍条码，查询价格区间</li>
+            <li class="feature-item"><div class="feature-bullet"></div>将书籍按价格区间分类，输入各类重量（kg）</li>
+            <li class="feature-item"><div class="feature-bullet"></div>自动计算各类小计和回收总价</li>
+            <li class="feature-item"><div class="feature-bullet"></div>生成「回收确认单」并展示二维码，供学生扫码</li>
+            <li class="feature-item"><div class="feature-bullet"></div>学生C端扫码确认回收后，管理员上传照片完成交易</li>
+          </ul>
+          <div class="interaction-note">🔁 <strong>交互复用：</strong>此处创建的确认单内容与C端C2-P06「站点直收确认单页」对接，交互逻辑与大宗回收模式一致。</div>
+        </div>
+      </div>
+
+      <!-- B2-P07 -->
+      <div class="page-card">
+        <div class="card-header">
+          <div class="card-icon" style="background:#d1f0e3">🚚</div>
+          <div class="card-meta">
+            <div class="card-page-id">B2-P07</div>
+            <div class="card-title">待转运列表页</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-purpose">管理员查看所有待转运至仓库的打包书籍订单，统一管理转运任务，发起出库操作。</div>
+          <ul class="features-list">
+            <li class="feature-item"><div class="feature-bullet"></div>列表展示所有待转运订单：订单号、来源（上门回收/站点直收/大宗）、书籍数量</li>
+            <li class="feature-item"><div class="feature-bullet"></div>Tab筛选：待转运 / 已转运</li>
+            <li class="feature-item"><div class="feature-bullet"></div>批量选择订单，生成本次转运批次</li>
+            <li class="feature-item"><div class="feature-bullet"></div>生成「转运入库码」供仓库管理员扫码</li>
+            <li class="feature-item"><div class="feature-bullet"></div>展示本次转运汇总：上门N单/大宗M单/站点直收K单，合计金额</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- B2-P08 -->
+      <div class="page-card">
+        <div class="card-header">
+          <div class="card-icon" style="background:#d1f0e3">📊</div>
+          <div class="card-meta">
+            <div class="card-page-id">B2-P08</div>
+            <div class="card-title">转运出库码展示页</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-purpose">管理员将书籍运送至仓库时，出示此码供仓库人员扫码确认入库，完成转运闭环。</div>
+          <ul class="features-list">
+            <li class="feature-item"><div class="feature-bullet"></div>居中展示大尺寸转运入库二维码</li>
+            <li class="feature-item"><div class="feature-bullet"></div>展示本批次转运汇总信息（单数、来源类型、总书本数）</li>
+            <li class="feature-item"><div class="feature-bullet"></div>仓库扫码确认后，页面更新为「入库确认成功」</li>
+            <li class="feature-item"><div class="feature-bullet"></div>跳转至转运记录详情</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="divider"><div class="divider-line"></div><div class="divider-text">B-END · WAREHOUSE ADMIN</div><div class="divider-line"></div></div>
+
+  <!-- ═══════════════════════════════════════ B3 ══════════════════════════════════════ -->
+  <div class="section" id="b3">
+    <div class="section-header">
+      <div class="section-num">05</div>
+      <div class="section-info">
+        <div class="section-tag" style="background:var(--tag-b3)">B-END · WAREHOUSE</div>
+        <div class="section-title">B端 · 仓库管理员</div>
+        <div class="section-desc">仓库管理员负责扫码接收书籍入库、清点核验（标记异常）、拆包二次核验、书籍上架（生成货架编码并打印标签）。确保书籍从入库到上架的完整追溯体系。</div>
+      </div>
+    </div>
+
+    <div class="flow-section">
+      <div class="flow-title">仓库管理员操作流程</div>
+      <div class="flow-steps">
+        <div class="flow-step"><div class="step-box">扫转运码接收</div><div class="step-arrow">→</div></div>
+        <div class="flow-step"><div class="step-box">清点打包（标记异常）</div><div class="step-arrow">→</div></div>
+        <div class="flow-step"><div class="step-box">完成入库</div><div class="step-arrow">→</div></div>
+        <div class="flow-step"><div class="step-box">拆包二次核验</div><div class="step-arrow">→</div></div>
+        <div class="flow-step"><div class="step-box">书籍上架（货架编码+打印）</div></div>
+      </div>
+    </div>
+
+    <div class="pages-grid">
+
+      <!-- B3-P01 -->
+      <div class="page-card">
+        <div class="card-header">
+          <div class="card-icon" style="background:#fef3cd">📥</div>
+          <div class="card-meta">
+            <div class="card-page-id">B3-P01</div>
+            <div class="card-title">扫码入库接收页</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-purpose">仓管扫描站点管理员出示的转运入库码，系统调出本次转运的全部订单汇总信息，以批次维度展示（非逐本明细）。</div>
+          <ul class="features-list">
+            <li class="feature-item"><div class="feature-bullet"></div>扫码后展示转运批次信息</li>
+            <li class="feature-item"><div class="feature-bullet"></div>按回收模式汇总展示（非逐本）：上门回收 N单/共M本 / 大宗回收 K单/共X kg / 站点直收 P单/共Q本</li>
+            <li class="feature-item"><div class="feature-bullet"></div>本次转运合计预估金额</li>
+            <li class="feature-item"><div class="feature-bullet"></div>来源站点信息、转运人员</li>
+            <li class="feature-item"><div class="feature-bullet"></div>「开始清点」按钮，进入清点操作页</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- B3-P02 -->
+      <div class="page-card">
+        <div class="card-header">
+          <div class="card-icon" style="background:#fef3cd">🔍</div>
+          <div class="card-meta">
+            <div class="card-page-id">B3-P02</div>
+            <div class="card-title">清点核验 & 异常标记页</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-purpose">仓管清点各包装内书籍，发现异常时通过输入订单号进行标记（运损/数量不一致等），系统自动追溯责任人。清点完成后点击完成入库。</div>
+          <ul class="features-list">
+            <li class="feature-item"><div class="feature-bullet"></div>订单包装清单展示（订单编号标注在包装上）</li>
+            <li class="feature-item"><div class="feature-bullet"></div>逐包确认按钮（滑动确认/点击已清点）</li>
+            <li class="feature-item"><div class="feature-bullet"></div>「标记异常」功能：输入订单号（或扫描包装条码）</li>
+            <li class="feature-item"><div class="feature-bullet"></div>选择标记类型：运损 / 数量不一致 / 书籍缺失 / 其他</li>
+            <li class="feature-item"><div class="feature-bullet"></div>上传异常照片</li>
+            <li class="feature-item"><div class="feature-bullet"></div>系统根据标记类型自动关联责任人（回收员或站点管理员）</li>
+            <li class="feature-item"><div class="feature-bullet"></div>清点完成后点击「完成入库」，书籍状态变为「已入库待核验」</li>
+          </ul>
+          <div class="interaction-note">⚖️ <strong>责任追溯：</strong>标记异常后，系统根据订单的回收模式判断第一责任人（上门回收→回收员，站点直收→站点管理员），可在后台配置对应扣款规则。</div>
+        </div>
+      </div>
+
+      <!-- B3-P03 -->
+      <div class="page-card">
+        <div class="card-header">
+          <div class="card-icon" style="background:#fef3cd">📋</div>
+          <div class="card-meta">
+            <div class="card-page-id">B3-P03</div>
+            <div class="card-title">待核验书籍列表页</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-purpose">展示所有已入库但尚未完成拆包二次核验的书籍批次，仓管选择批次开始核验。</div>
+          <ul class="features-list">
+            <li class="feature-item"><div class="feature-bullet"></div>Tab筛选：待核验 / 核验中 / 已核验待上架</li>
+            <li class="feature-item"><div class="feature-bullet"></div>每条批次展示：入库时间、书籍数量、来源站点</li>
+            <li class="feature-item"><div class="feature-bullet"></div>点击进入拆包核验操作页</li>
+            <li class="feature-item"><div class="feature-bullet"></div>异常标记批次高亮显示</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- B3-P04 -->
+      <div class="page-card">
+        <div class="card-header">
+          <div class="card-icon" style="background:#fef3cd">🔎</div>
+          <div class="card-meta">
+            <div class="card-page-id">B3-P04</div>
+            <div class="card-title">拆包二次核验页</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-purpose">仓管拆包逐本核验书籍外观、新旧程度、笔记、正版等，发现问题可对订单进行标记追责，核验通过后书籍状态更新为「待上架」。</div>
+          <ul class="features-list">
+            <li class="feature-item"><div class="feature-bullet"></div>展示批次书籍列表，逐本核验</li>
+            <li class="feature-item"><div class="feature-bullet"></div>核验维度：书籍外观 / 新旧程度 / 笔记程度 / 是否正版</li>
+            <li class="feature-item"><div class="feature-bullet"></div>「标记问题」：输入订单号，选择问题类型，上传照片</li>
+            <li class="feature-item"><div class="feature-bullet"></div>系统根据问题类型执行处罚规则（如扣减打包核验人佣金）</li>
+            <li class="feature-item"><div class="feature-bullet"></div>核验通过书籍：状态变为「待上架」</li>
+            <li class="feature-item"><div class="feature-bullet"></div>问题书籍：单独处理（降级/退货/废弃）</li>
+            <li class="feature-item"><div class="feature-bullet"></div>「完成核验」按钮，批次状态更新</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- B3-P05 -->
+      <div class="page-card">
+        <div class="card-header">
+          <div class="card-icon" style="background:#fef3cd">📚</div>
+          <div class="card-meta">
+            <div class="card-page-id">B3-P05</div>
+            <div class="card-title">书籍上架操作页</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-purpose">仓管对核验通过的书籍进行上架操作，选择货架号后扫描书籍编码生成位置编码（如A-3-L-001），最终调用蓝牙热敏打印机打印标签贴至书脊。</div>
+          <ul class="features-list">
+            <li class="feature-item"><div class="feature-bullet"></div>选择目标货架（下拉选择，显示货架号及剩余容量）</li>
+            <li class="feature-item"><div class="feature-bullet"></div>货架剩余容量实时展示（如：A-3货架 剩余87/130位）</li>
+            <li class="feature-item"><div class="feature-bullet"></div>扫描书籍编码，系统生成位置码（格式：货架-层-左右-序号，如A-3-L-001）</li>
+            <li class="feature-item"><div class="feature-bullet"></div>生成编码后即时调用蓝牙热敏打印机打印标签</li>
+            <li class="feature-item"><div class="feature-bullet"></div>货架满时提示「已达最大容量，请选择新货架」</li>
+            <li class="feature-item"><div class="feature-bullet"></div>可添加新货架（输入货架号、设置最大容量）</li>
+            <li class="feature-item"><div class="feature-bullet"></div>批量上架：连续扫码上架多本，每扫一本打印一张标签</li>
+            <li class="feature-item"><div class="feature-bullet"></div>上架完成后书籍状态同步为「已上架」，后台更新货架位置信息</li>
+          </ul>
+          <div class="interaction-note">🖨️ <strong>打印机连接：</strong>小程序需提前配对蓝牙热敏打印机，页面提供「连接打印机」入口，连接状态实时显示。打印标签内容：书籍位置码 + 书名简称 + 条形码。</div>
+        </div>
+      </div>
+
+      <!-- B3-P06 -->
+      <div class="page-card">
+        <div class="card-header">
+          <div class="card-icon" style="background:#fef3cd">🗄️</div>
+          <div class="card-meta">
+            <div class="card-page-id">B3-P06</div>
+            <div class="card-title">货架管理页</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-purpose">仓管查看所有货架的使用状态，管理货架容量配置，查看各货架当前存书情况。</div>
+          <ul class="features-list">
+            <li class="feature-item"><div class="feature-bullet"></div>货架列表：货架号、最大容量、当前使用量、剩余量</li>
+            <li class="feature-item"><div class="feature-bullet"></div>进度条直观展示容量使用率</li>
+            <li class="feature-item"><div class="feature-bullet"></div>点击货架查看该货架内所有书籍列表（位置码+书名）</li>
+            <li class="feature-item"><div class="feature-bullet"></div>「添加新货架」功能</li>
+            <li class="feature-item"><div class="feature-bullet"></div>支持修改货架最大容量</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- B3-P07 -->
+      <div class="page-card">
+        <div class="card-header">
+          <div class="card-icon" style="background:#fef3cd">📊</div>
+          <div class="card-meta">
+            <div class="card-page-id">B3-P07</div>
+            <div class="card-title">仓库工作台/首页</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-purpose">仓库管理员的主工作台，展示今日业务数据概览，提供快捷操作入口。</div>
+          <ul class="features-list">
+            <li class="feature-item"><div class="feature-bullet"></div>数据统计：今日入库批次数 / 待核验数量 / 待上架数量 / 已上架总量</li>
+            <li class="feature-item"><div class="feature-bullet"></div>快捷入口：「扫码入库」「去核验」「书籍上架」「货架管理」</li>
+            <li class="feature-item"><div class="feature-bullet"></div>近期入库记录（最近5条）</li>
+            <li class="feature-item"><div class="feature-bullet"></div>异常标记待处理提醒</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <strong>图书回收多模式交易商城系统</strong> · 产品功能规格文档 PRD v1.0<br>
+    用于产品原型设计 & Google Stitch UI 生成参考
+  </div>
+  <div style="text-align:right">
+    共 6 端 · 40+ 功能页面<br>
+    C端散客 · C端大宗 · B端回收员 · B端站点管理 · B端仓库管理
+  </div>
+</footer>
+
+<script>
+  // Active nav highlight on scroll
+  const sections = document.querySelectorAll('.section');
+  const navItems = document.querySelectorAll('.nav-item');
+  
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.id;
+        navItems.forEach(item => {
+          item.classList.toggle('active', item.getAttribute('href') === '#' + id);
+        });
+      }
+    });
+  }, { threshold: 0.2 });
+  
+  sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
