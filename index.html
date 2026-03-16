@@ -1217,25 +1217,92 @@
       </div>
     </div>
 
-    <div class="page-card">
+    <div class="page-card" style="grid-column: 1 / -1">
       <div class="card-header">
         <div class="card-icon" style="background:#fef3cd">📚</div>
         <div class="card-meta"><div class="card-page-id">B3-P06</div><div class="card-title">书籍上架操作页（两种批次统一）</div></div>
       </div>
       <div class="card-body">
-        <div class="card-purpose">所有待上架书籍（图书批次核验通过 + 称重批次分拣挑出）在此统一上架。选择货架后扫ISBN生成唯一货号，调用蓝牙打印机打印标签。</div>
+        <div class="card-purpose">所有待上架书籍（图书批次核验通过 + 称重批次分拣挑出）在此统一上架。扫描ISBN后系统并行查询孔网最新价格与系统内已有商品链接，由上架人员人工判断并选择处理路径，最终生成全局唯一货号，调用蓝牙打印机打印标签。</div>
+
+        <!-- 扫码后数据查询 -->
+        <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;color:#b45309;margin:14px 0 8px">① 扫码 — 并行查询两个数据源</div>
         <ul class="features-list">
-          <li class="feature-item"><div class="feature-bullet"></div>选择目标货架（下拉，显示货架号及剩余容量，如：A-3货架 剩余87/130位）</li>
-          <li class="feature-item"><div class="feature-bullet"></div>扫描书籍ISBN，系统生成唯一货号（格式：货架-层-左右-序号，如 A-3-L-001）</li>
-          <li class="feature-item"><div class="feature-bullet"></div>生成货号后立即调用蓝牙热敏打印机打印标签（含货号+书名简称+条形码）</li>
-          <li class="feature-item"><div class="feature-bullet"></div>标签贴至书脊，书籍放入对应货架位</li>
-          <li class="feature-item"><div class="feature-bullet"></div>货架满时提示「已达最大容量，请选择新货架」</li>
-          <li class="feature-item"><div class="feature-bullet"></div>可添加新货架（输入货架号、设置最大容量）</li>
-          <li class="feature-item"><div class="feature-bullet"></div>批量上架：连续扫码，每扫一本打印一张，效率优先</li>
-          <li class="feature-item"><div class="feature-bullet"></div>上架完成，书籍状态同步「已上架」，记录货架位置及来源批次号</li>
+          <li class="feature-item"><div class="feature-bullet"></div>扫描书籍ISBN条形码，系统立即并行发起两个查询：
+            <div style="margin-top:6px;display:grid;grid-template-columns:1fr 1fr;gap:10px">
+              <div style="background:#f0f6ff;border-radius:3px;padding:10px;font-size:11px"><strong style="color:#1b4f72">孔网接口（实时）</strong><br>返回该ISBN的最新市场参考价、书名、基础信息</div>
+              <div style="background:#f0fff8;border-radius:3px;padding:10px;font-size:11px"><strong style="color:#2d6a4f">系统内部查询</strong><br>返回该ISBN下所有已有商品链接（名称、图片、在售价格、当前库存数），可能返回0条、1条或多条</div>
+            </div>
+          </li>
         </ul>
+
+        <!-- 三条路径 -->
+        <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;color:#b45309;margin:18px 0 8px">② 展示结果 — 上架人员判断选择路径</div>
+
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px">
+          <!-- 路径一 -->
+          <div style="border:1px solid var(--border);border-radius:4px;padding:14px">
+            <div style="font-size:11px;font-weight:700;color:#1b4f72;margin-bottom:8px">路径一 · 首次上架</div>
+            <div style="font-size:11px;color:#555;line-height:1.7">系统内<strong>无</strong>该ISBN商品记录<br>展示「首次上架」提示 + 孔网参考价<br><br>
+            操作：确认/修改书名 → 确认/修改价格 → <span style="color:#c84b31;font-weight:600">上传图片（必填）</span><br><br>
+            提交：创建新商品链接 → 货号生成 → 库存=1</div>
+          </div>
+          <!-- 路径二 -->
+          <div style="border:1px solid var(--border);border-radius:4px;padding:14px">
+            <div style="font-size:11px;font-weight:700;color:#2d6a4f;margin-bottom:8px">路径二 · 复用已有商品</div>
+            <div style="font-size:11px;color:#555;line-height:1.7">系统内有1条或多条商品记录<br>展示所有已有商品链接列表供选择<br><br>
+            上架人员从列表中点选「是同一本书」<br><br>
+            • 在售价 = 孔网价：直接确认上架<br>
+            • 在售价 ≠ 孔网价：<span style="color:#856404;font-weight:600">显示价差提示</span>，可勾选「同步价格」<br><br>
+            提交：复用商品链接 → 货号生成 → 库存+1<br>
+            [勾选同步价格] 后台触发价格更新任务</div>
+          </div>
+          <!-- 路径三 -->
+          <div style="border:1px solid var(--border);border-radius:4px;padding:14px">
+            <div style="font-size:11px;font-weight:700;color:#c84b31;margin-bottom:8px">路径三 · 新品上架（ISBN已有记录但书不同）</div>
+            <div style="font-size:11px;color:#555;line-height:1.7">系统内有记录，但上架人员判断不是同一本书<br>（版本/印次/封面不符）<br><br>
+            点击商品列表底部<span style="color:#c84b31;font-weight:600">「按新品上架」</span>按钮<br><br>
+            操作：确认/修改书名 → 确认/修改价格 → <span style="color:#c84b31;font-weight:600">上传新图片（必填）</span><br><br>
+            提交：创建全新独立商品链接 → 货号生成 → 库存=1<br>
+            <span style="color:#888">（不合并、不影响原有商品库存）</span></div>
+          </div>
+        </div>
+
+        <!-- 商品链接列表展示说明 -->
+        <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;color:#b45309;margin:18px 0 8px">③ 已有商品链接列表展示规则</div>
+        <ul class="features-list">
+          <li class="feature-item"><div class="feature-bullet"></div>同一ISBN下若有多条商品链接（因多次路径三新增），全部展示在列表中，每条独立可选</li>
+          <li class="feature-item"><div class="feature-bullet"></div>每条商品链接展示：商品图片缩略图、书名、当前在售价格、当前库存数量</li>
+          <li class="feature-item"><div class="feature-bullet"></div>列表底部始终保留「按新品上架」入口，不论已有多少条记录</li>
+          <li class="feature-item"><div class="feature-bullet"></div>系统不限制同一ISBN下商品链接数量上限</li>
+        </ul>
+
+        <!-- 价差提示说明 -->
+        <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;color:#b45309;margin:18px 0 8px">④ 价差提示与同步价格逻辑</div>
+        <ul class="features-list">
+          <li class="feature-item"><div class="feature-bullet"></div>触发条件：选中某条已有商品后，其在售价格与本次孔网参考价<strong>不相等</strong>时，立即展示价差提示（无阈值，只要不同就提示）</li>
+          <li class="feature-item"><div class="feature-bullet"></div>提示样式：「孔网参考价 ¥X，当前在售价 ¥Y，存在价差」+ 勾选框「同步至孔网价格」</li>
+          <li class="feature-item"><div class="feature-bullet"></div>「同步价格」默认<strong>不勾选</strong>，上架人员主动勾选才触发</li>
+          <li class="feature-item"><div class="feature-bullet"></div>勾选后提交：本次上架正常完成（库存+1）的同时，后台异步触发价格更新任务，将该商品链接在售价更新为本次孔网参考价</li>
+          <li class="feature-item"><div class="feature-bullet"></div>不勾选：正常上架，当前在售价格不变</li>
+        </ul>
+
+        <!-- 货架与打印 -->
+        <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;color:#b45309;margin:18px 0 8px">⑤ 货架选择与打印标签（三条路径均一致）</div>
+        <ul class="features-list">
+          <li class="feature-item"><div class="feature-bullet"></div>商品链接确认后，选择目标货架（显示货架号及剩余容量，如 A-3货架 剩余87/130位）</li>
+          <li class="feature-item"><div class="feature-bullet"></div>系统生成全局唯一货号（格式：货架-层-左右-序号，如 A-3-L-001）</li>
+          <li class="feature-item"><div class="feature-bullet"></div>立即调用蓝牙热敏打印机打印标签（货号 + 书名简称 + ISBN条形码）</li>
+          <li class="feature-item"><div class="feature-bullet"></div>标签贴至书脊，将书放入对应货架位置</li>
+          <li class="feature-item"><div class="feature-bullet"></div>货架满时提示「已达最大容量，请切换货架」，可临时新建货架</li>
+          <li class="feature-item"><div class="feature-bullet"></div>上架完成：书籍状态更新为「已上架」，记录货号、货架位置、商品链接ID、来源批次号</li>
+        </ul>
+
         <div class="interaction-note note-green">
-          ✅ <strong>来源透明：</strong>书籍档案自动记录来源字段——图书批次书籍显示「来源：订单 #XXXXXX」，称重批次书籍显示「来源：称重批次 #XXXXXX」。ISBN重复不影响任何逻辑，货号全局唯一，是书籍在仓库的唯一身份标识。
+          ✅ <strong>货号与商品链接的关系：</strong>货号是每本物理书在仓库的唯一位置标识，商品链接是面向销售侧的商品档案（含价格、图片、库存）。两者独立存在：同一商品链接可对应N个货号（N本同书），同一货号只对应一本物理书。库存数 = 该商品链接下所有有效货号的数量。
+        </div>
+        <div class="interaction-note note-blue" style="margin-top:8px">
+          📌 <strong>来源字段透明：</strong>每本书上架后档案自动记录来源——图书批次显示「来源：订单 #XXXXXX」，称重批次显示「来源：称重批次 #XXXXXX」。ISBN重复不影响任何逻辑，货号全局唯一。
         </div>
       </div>
     </div>
